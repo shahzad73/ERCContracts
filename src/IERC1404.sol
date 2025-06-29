@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.24;
 
 abstract contract IERC1404 {
     /// @notice Detects if a transfer will be reverted and if so returns an appropriate reference code

@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.24;
 
 // This contract is minimum implementation of ERC1404 protocol without any libraries 
 

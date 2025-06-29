@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.24;
 
 import "forge-std/Test.sol";
 import "../src/ERC1404TokenMinKYCv13.sol";
@@ -63,7 +63,7 @@ contract ERC1404_Default_Values is ERC1404_Base_Setup {
 
     // Test allowedInvestors is set to it's default value 0
     function testAllowedInvestorsSetToDefaultValue() public {
-        assertEq(token.allowedInvestors(), allowedInvestors);
+        assertEq(token.allowedInvestors(), 0);
     }
 
     function testCheckDefaultNameAndSymbolValues() public {
@@ -71,7 +71,7 @@ contract ERC1404_Default_Values is ERC1404_Base_Setup {
         assertEq(token.symbol(), symbol);
         assertEq(token.IssuancePlatform(), "DigiShares");
         assertEq(token.issuanceProtocol(), "ERC-1404");
-        assertEq(token.allowedInvestors(), allowedInvestors);
+        assertEq(token.allowedInvestors(), 0);
         assertEq(token.currentTotalInvestors(), 0);
     }
 }
