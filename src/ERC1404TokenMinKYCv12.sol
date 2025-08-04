@@ -43,8 +43,6 @@ contract ERC1404TokenMinKYCv12 is IERC20Token, IERC1404 {
 	// ERC20 related functions
 	uint256 public decimals = 18;
 	string public version = "1.2";
-	string public IssuancePlatform = "DigiShares";
-	string public issuanceProtocol = "ERC-1404";
     uint256 private _totalSupply;
     string public name;
     string public symbol;

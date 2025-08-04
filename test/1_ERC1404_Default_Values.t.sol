@@ -69,8 +69,6 @@ contract ERC1404_Default_Values is ERC1404_Base_Setup {
     function testCheckDefaultNameAndSymbolValues() public {
         assertEq(token.name(), name);
         assertEq(token.symbol(), symbol);
-        assertEq(token.IssuancePlatform(), "DigiShares");
-        assertEq(token.issuanceProtocol(), "ERC-1404");
         assertEq(token.allowedInvestors(), 0);
         assertEq(token.currentTotalInvestors(), 0);
     }

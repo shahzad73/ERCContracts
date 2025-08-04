@@ -35,8 +35,6 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
 	event IssuerForceTransfer (address indexed from, address indexed to, uint256 amount);
 
 	string public constant version = "1.3";
-	string public constant IssuancePlatform = "DigiShares";
-	string public constant issuanceProtocol = "ERC-1404";
 	string public ShareCertificate;
 	string public CompanyHomepage;
 	string public CompanyLegalDocs;
