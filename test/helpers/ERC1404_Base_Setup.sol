@@ -10,7 +10,7 @@ contract ERC1404_Base_Setup is Test {
     address addr3 = 0x8192706d699390D668710BD247886e3016D4672E;
     address addr4 = 0x6a44140c28629b1E20114122fb53101dB6953efC;
 
-    ERC1404TokenMinKYCv13 token;
+    ERC1404TokenMinKYCv14 token;
     string name = "TestToken";
     string symbol = "TKN";
     uint initialSupply = 10000;
@@ -25,7 +25,7 @@ contract ERC1404_Base_Setup is Test {
     uint64 tradingHoldingPeriod = 1;
 
     function setUp() public virtual {
-        token = new ERC1404TokenMinKYCv13(
+        token = new ERC1404TokenMinKYCv14 (
             initialSupply,
             name,
             symbol,

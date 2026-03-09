@@ -7,7 +7,7 @@ import "../lib/openzeppelin-contracts/contracts/access/Ownable.sol";
 import "./IERC1404.sol";
 
 
-contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
+contract ERC1404TokenMinKYCv14 is ERC20, Ownable, IERC1404 {
 
 	// Set receive and send restrictions on investors
 	// date is Linux Epoch datetime
