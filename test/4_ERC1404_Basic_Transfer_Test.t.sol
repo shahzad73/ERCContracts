@@ -9,7 +9,7 @@
 pragma solidity ^0.8.24;
 
 import "forge-std/Test.sol";
-import "../src/ERC1404TokenMinKYCv13.sol";
+//import "../src/ERC1404TokenMinKYCv14.sol";
 import "./helpers/ERC1404_Base_Setup.sol";
 
 contract ERC1404_Basic_Transfer_Test is ERC1404_Base_Setup {
@@ -47,7 +47,7 @@ contract ERC1404_Basic_Transfer_Test is ERC1404_Base_Setup {
     }
 
     function testTransferZeroAmount() public {
-        vm.expectRevert("Zero transfer amount not allowed");
+        vm.expectRevert("Transfer amount must be greater than zero");
         token.transfer(addr1, _transferAmountZero);
     }
 

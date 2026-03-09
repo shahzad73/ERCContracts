@@ -9,13 +9,12 @@
 pragma solidity ^0.8.24;
 
 import "forge-std/Test.sol";
-import "../src/ERC1404TokenMinKYCv13.sol";
+//import "../src/ERC1404TokenMinKYCv14.sol";
 import "./helpers/ERC1404_Base_Setup.sol";
 
 contract ERC1404_Check_Transfer_Restrictions_Tests is ERC1404_Base_Setup {
     enum RestrictionCodes {
         NoTransferRestriction,
-        MaxAllowedAddressReached,
         AllTransfersDisabledHoldingPeriodInProgress,
         ZeroTransferAmount,
         SenderNotWhitelistedOrBlocked,
@@ -36,32 +35,32 @@ contract ERC1404_Check_Transfer_Restrictions_Tests is ERC1404_Base_Setup {
             token.messageForTransferRestriction(0),
             "No transfer restrictions found"
         );
-        assertEq(
+        /*assertEq(
             token.messageForTransferRestriction(1),
             "Max allowed addresses with non-zero restriction is in place, this transfer will exceed this limitation"
-        );
+        );*/
         assertEq(
-            token.messageForTransferRestriction(2),
+            token.messageForTransferRestriction(1),
             "All transfers are disabled because Holding Period is not yet expired"
         );
         assertEq(
-            token.messageForTransferRestriction(3),
-            "Zero transfer amount not allowed"
+            token.messageForTransferRestriction(2),
+            "Transfer amount must be greater than zero"
         );
         assertEq(
-            token.messageForTransferRestriction(4),
+            token.messageForTransferRestriction(3),
             "Sender is not whitelisted or blocked"
         );
         assertEq(
-            token.messageForTransferRestriction(5),
+            token.messageForTransferRestriction(4),
             "Receiver is not whitelisted or blocked"
         );
         assertEq(
-            token.messageForTransferRestriction(6),
+            token.messageForTransferRestriction(5),
             "Sender is whitelisted but is not eligible to send tokens and under holding period (KYC time restriction)"
         );
         assertEq(
-            token.messageForTransferRestriction(7),
+            token.messageForTransferRestriction(6),
             "Receiver is whitelisted but is not yet eligible to receive tokens in his wallet (KYC time restriction)"
         );
     }
@@ -74,15 +73,6 @@ contract ERC1404_Check_Transfer_Restrictions_Tests is ERC1404_Base_Setup {
         );
     }
 
-    function testMaxNonZeroAddressesRestriction(uint amount) public {
-        amount = bound(amount, 2, initialSupply);
-        token.resetAllowedInvestors(1);
-        token.transfer(addr1, amount);
-        assertEq(
-            token.detectTransferRestriction(addr1, addr2, amount / 2),
-            uint(RestrictionCodes.MaxAllowedAddressReached)
-        );
-    }
 
     function testTransferHoldingPeriodInvestorToInvestor(
         uint amount

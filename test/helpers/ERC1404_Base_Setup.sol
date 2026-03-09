@@ -2,7 +2,7 @@
 pragma solidity ^0.8.24;
 
 import "forge-std/Test.sol";
-import "../../src/ERC1404TokenMinKYCv13.sol";
+import "../../src/ERC1404TokenMinKYCv14.sol";
 
 contract ERC1404_Base_Setup is Test {
     address addr1 = 0x1a8929fbE9abEc00CDfCda8907408848cBeb5300;
@@ -29,11 +29,11 @@ contract ERC1404_Base_Setup is Test {
             initialSupply,
             name,
             symbol,
-            allowedInvestors,
+            //allowedInvestors,
             decimalsPlaces,
-            shareCertificate,
-            companyHomepage,
-            companyLegalDocs,
+            //shareCertificate,
+            //companyHomepage,
+            //companyLegalDocs,
             atomicSwapContractAddress,
             tradingHoldingPeriod
         );

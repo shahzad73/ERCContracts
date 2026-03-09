@@ -2,7 +2,7 @@
 pragma solidity ^0.8.24;
 
 import "forge-std/Test.sol";
-import "../src/ERC1404TokenMinKYCv13.sol";
+//import "../src/ERC1404TokenMinKYCv14.sol";
 import "./helpers/ERC1404_Base_Setup.sol";
 
 // --------------------------------------------------------------------------------
@@ -61,15 +61,15 @@ contract ERC1404_Default_Values is ERC1404_Base_Setup {
         assertEq(token.tradingHoldingPeriod(), tradingHoldingPeriod);
     }
 
-    // Test allowedInvestors is set to it's default value 0
+    /*// Test allowedInvestors is set to it's default value 0
     function testAllowedInvestorsSetToDefaultValue() public {
         assertEq(token.allowedInvestors(), 0);
-    }
+    }*/
 
     function testCheckDefaultNameAndSymbolValues() public {
         assertEq(token.name(), name);
         assertEq(token.symbol(), symbol);
-        assertEq(token.allowedInvestors(), 0);
+        //assertEq(token.allowedInvestors(), 0);
         assertEq(token.currentTotalInvestors(), 0);
     }
 }
