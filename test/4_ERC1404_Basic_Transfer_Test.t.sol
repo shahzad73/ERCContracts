@@ -57,8 +57,34 @@ contract ERC1404_Basic_Transfer_Test is ERC1404_Base_Setup {
         token.transfer(addr1, uint(_transferNegativeAmount));
     }
 
-    function testFailTransferOverflowAmount() public {
-        token.transfer(addr1, uint(_transferNegativeAmount) + 1);
+
+
+    //Rename the function
+    //Change this ❌   function testFailTransferOverflowAmount() public {
+    //to something like ✅    function test_RevertIf_TransferOverflowAmount() public {
+    function testRevertIfTransferOverflowAmount() public {
+        vm.expectRevert();     //Foundry now requires explicit revert expectations using:  previously it was not required
+
+        // If _transferNegativeAmount was negative (e.g. -1):   then
+        // uint(-1) = 2^256 - 1
+        // uint(-1) + 1 = 0   (overflow wraps)
+        
+        // Important (Solidity ≥0.8)
+        // Overflow behavior changed:
+        // ❌ No silent wrap
+        // ✅ Automatically reverts  
+        // so
+        // uint256 x = type(uint256).max;
+        // x + 1; // REVERTS              
+
+        // ❌ testFail* removed in Foundry
+        // ✅ Use vm.expectRevert()
+        // Your test was checking revert implicitly
+        // Now must do it explicitly        
+
+        // token.transfer(addr1, uint(_transferNegativeAmount) + 1);
+
+        token.transfer(addr1, type(uint256).max);
     }
 
     function testTransferFromInvestorToInvestor() public {

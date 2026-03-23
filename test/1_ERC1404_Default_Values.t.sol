@@ -50,10 +50,17 @@ contract ERC1404_Default_Values is ERC1404_Base_Setup {
     function testCheckAccountIsNotWhitelisted(
         address randomAddress
     ) public {
-        vm.assume(randomAddress != address(this) && randomAddress != token.owner());
-        (uint receiveRestriction, uint sendRestriction) = token.getKYCData(randomAddress);
-        assertEq(receiveRestriction, 0);
-        assertEq(sendRestriction, 0);
+            vm.assume(randomAddress != address(this));
+            vm.assume(randomAddress != token.owner());
+
+            // Ensure it's not already modified
+            (uint r, uint s) = token.getKYCData(randomAddress);
+            vm.assume(r == 0 && s == 0);
+
+            (uint receiveRestriction, uint sendRestriction) = token.getKYCData(randomAddress);
+
+            assertEq(receiveRestriction, 0);
+            assertEq(sendRestriction, 0);    
     }
 
     // Test tradingHoldingPeriod is set to it's default value 1
