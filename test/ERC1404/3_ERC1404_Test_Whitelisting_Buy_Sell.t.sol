@@ -79,28 +79,5 @@ contract ERC1404_Test_Whitelisting_Buy_Sell is ERC1404_Base_Setup {
         token.mint(addr2, _transferAmount);
     }
 
-    function testCurrentTotalInvestorsIncreaseTransfer() public {
-        token.transfer(addr1, _transferAmount);
-        assertEq(token.currentTotalInvestors(), 1);
-    }
 
-    function testCurrentTotalInvestorsIncreaseMint() public {
-        token.mint(addr1, _transferAmount);
-        assertEq(token.currentTotalInvestors(), 1);
-    }
-
-    function testCurrentTotalInvestorsDecrease() public {
-        token.transfer(addr1, _transferAmount);
-        address owner = token.owner();
-        vm.prank(addr1);
-        token.transfer(owner, _transferAmount);
-        assertEq(token.currentTotalInvestors(), 0);
-    }
-
-    function testBurnToDecreaseTotalInvestors(uint8 amount) public {
-        vm.assume(amount > 0);
-        token.mint(addr1, amount);
-        token.burn(addr1, amount);
-        assertEq(token.currentTotalInvestors(), 0);
-    }
 }

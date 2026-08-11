@@ -31,10 +31,7 @@ contract ERC1404TokenMinKYCv14 is ERC20, Ownable, IERC1404 {
 	event IssuerForceTransfer (address indexed from, address indexed to, uint256 amount);
 
 	string public constant version = "1.4";
-
-
 	uint8 private immutable _decimals;	
-	uint64 public currentTotalInvestors = 0;		
 
 	// Holding period in EpochTime, if set in future then it will stop 
 	// all transfers between investors
@@ -65,11 +62,7 @@ contract ERC1404TokenMinKYCv14 is ERC20, Ownable, IERC1404 {
 		uint256 _initialSupply, 
 		string memory _name,  
 		string memory _symbol, 
-		// uint64 _allowedInvestors, 
 		uint8 _decimalsPlaces, 
-		// string memory _ShareCertificate, 
-		// string memory _CompanyHomepage, 
-		// string memory _CompanyLegalDocs, 
 		address _atomicSwapContractAddress,
 		uint64  _tradingHoldingPeriod
 	) ERC20(_name, _symbol)  {
@@ -145,10 +138,6 @@ contract ERC1404TokenMinKYCv14 is ERC20, Ownable, IERC1404 {
 
 		ERC20._mint(account, amount);		 
 
-        if( ERC20.balanceOf(account) == amount && account != Ownable.owner() ) {
-            currentTotalInvestors = currentTotalInvestors + 1;
-        }
-
 		emit MintTokens(account, amount);
 		return true;
     }
@@ -163,13 +152,6 @@ contract ERC1404TokenMinKYCv14 is ERC20, Ownable, IERC1404 {
 		require ( amount > 0, "Zero amount cannot be burned" );		
 
 		ERC20._burn(account, amount);
-
-		// burning will decrease currentTotalInvestors if address balance becomes 0		
-		if( ERC20.balanceOf(account) == 0 && account != Ownable.owner() && currentTotalInvestors > 0)
-		{
-			currentTotalInvestors = currentTotalInvestors - 1;
-		}
-
 
 		 emit BurnTokens(account, amount);		 
 		 return true;
@@ -419,14 +401,6 @@ contract ERC1404TokenMinKYCv14 is ERC20, Ownable, IERC1404 {
 			// _transfer are called separately to ensure correct behavior.
 			
 			// ERC20.transferFrom(sender, recipient, amount);
-		}
-
-        if( recipient != Ownable.owner() && ERC20.balanceOf(recipient) == amount ) {
-            currentTotalInvestors = currentTotalInvestors + 1;
-        }
-		if( ERC20.balanceOf(sender) == 0 && sender != Ownable.owner() && currentTotalInvestors > 0)
-		{
-			currentTotalInvestors = currentTotalInvestors - 1;
 		}
 
 	}

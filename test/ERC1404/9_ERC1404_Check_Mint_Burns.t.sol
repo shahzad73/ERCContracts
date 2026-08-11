@@ -25,7 +25,6 @@ contract ERC1404_Check_Mint_Burns is ERC1404_Base_Setup {
         token.mint(token.owner(), amount);
         assertEq(token.balanceOf(token.owner()), amount + initialSupply);
         assertEq(token.totalSupply(), amount + initialSupply);
-        assertEq(token.currentTotalInvestors(), 0);
     }
 
     function testMintNewTokensToInvestor(uint128 amount) public {
@@ -33,7 +32,6 @@ contract ERC1404_Check_Mint_Burns is ERC1404_Base_Setup {
         token.mint(addr1, amount);
         assertEq(token.balanceOf(addr1), amount);
         assertEq(token.totalSupply(), amount + initialSupply);
-        assertEq(token.currentTotalInvestors(), 1);
     }
 
     function testMintNewTokensAsInvestor(uint128 amount) public {
