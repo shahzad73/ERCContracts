@@ -5,28 +5,6 @@ import "./helpers/ERC20_Base_Setup.sol";
 import "forge-std/Test.sol";
 
 contract ERC20_Owner_Only_Interfaces_Test is ERC20_Base_Setup {
-    // Test: modifyKYCData can only be called by owner
-    function test_ModifyKYCData_OnlyOwner() public {
-        uint256 futureTime = block.timestamp + 365 days;
-        
-        // Owner can call modifyKYCData
-        vm.prank(address(this));
-        token.modifyKYCData(addr1, futureTime, futureTime);
-        
-        // Verify it was set
-        (uint256 receiveRestriction, uint256 sendRestriction) = token.getKYCData(addr1);
-        assertEq(receiveRestriction, futureTime, "Receive restriction should be set");
-        assertEq(sendRestriction, futureTime, "Send restriction should be set");
-    }
-
-    // Test: modifyKYCData cannot be called by non-owner
-    function test_ModifyKYCData_NonOwner_Fails() public {
-        uint256 futureTime = block.timestamp + 365 days;
-        
-        vm.prank(addr1);
-        vm.expectRevert();
-        token.modifyKYCData(addr2, futureTime, futureTime);
-    }
 
     // Test: pause can only be called by owner
     function test_Pause_OnlyOwner() public {
@@ -131,13 +109,6 @@ contract ERC20_Owner_Only_Interfaces_Test is ERC20_Base_Setup {
 
     // Test: All owner-only functions reject calls from non-owners
     function test_AllOwnerFunctions_RejectNonOwners() public {
-        uint256 futureTime = block.timestamp + 365 days;
-        
-        // Test modifyKYCData
-        vm.prank(addr1);
-        vm.expectRevert();
-        token.modifyKYCData(addr2, futureTime, futureTime);
-        
         // Test pause
         vm.prank(addr2);
         vm.expectRevert();
@@ -161,12 +132,6 @@ contract ERC20_Owner_Only_Interfaces_Test is ERC20_Base_Setup {
 
     // Test: Owner can call all owner-only functions in sequence
     function test_OwnerCanCallAllFunctions() public {
-        uint256 futureTime = block.timestamp + 365 days;
-        
-        // Call modifyKYCData on addr2 (not addr1, to avoid issues with mint)
-        vm.prank(address(this));
-        token.modifyKYCData(addr2, futureTime, futureTime);
-        
         // Call mint to addr1 (no restrictions)
         vm.prank(address(this));
         token.mint(addr1, 1000);

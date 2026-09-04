@@ -328,10 +328,8 @@ contract ERC1404TokenMinKYCv14 is ERC20, Ownable, IERC1404 {
 	public 
 	notRestricted (msg.sender, recipient, amount)
 	returns (bool) {
-
-		transferSharesBetweenInvestors ( msg.sender, recipient, amount, true );
+		ERC20._transfer(msg.sender, recipient, amount);
 		return true;
-
     }
 
 
@@ -346,7 +344,11 @@ contract ERC1404TokenMinKYCv14 is ERC20, Ownable, IERC1404 {
 	notRestricted (sender, recipient, amount)
 	returns (bool)	{	
 
-		transferSharesBetweenInvestors ( sender, recipient, amount, false );
+		// _spendAllowance() will revert if the caller doesn't have sufficient allowance, 
+		// and _transfer() will revert if the sender doesn't have enough tokens.
+		ERC20._spendAllowance(sender, msg.sender, amount);
+		ERC20._transfer(sender, recipient, amount);
+
 		emit TransferFrom( msg.sender, sender, recipient, amount );
 		return true;
 
@@ -369,39 +371,9 @@ contract ERC1404TokenMinKYCv14 is ERC20, Ownable, IERC1404 {
 	external 
 	returns (bool)  {
 		
-		transferSharesBetweenInvestors ( from, Ownable.owner(), amount, true );
+		ERC20._transfer(from, Ownable.owner(), amount);
 		emit IssuerForceTransfer (from, Ownable.owner(), amount);
 		return true;
-
-	}
-
-
-
-	// Transfer tokens from one account to other
-	// Also manage current number of token holders
-	function transferSharesBetweenInvestors (
-        address sender,
-        address recipient,
-        uint256 amount,
-		bool simpleTransfer	   // true = transfer,   false = transferFrom
-	) 
-	internal {
-
-		if( simpleTransfer == true ) {
-			ERC20._transfer(sender, recipient, amount);
-		} else {
-			ERC20._spendAllowance(sender, msg.sender, amount);
-			ERC20._transfer(sender, recipient, amount);
-
-			// ERC20.transferFrom() internally calls _spendAllowance() then _transfer().
-			// However because your contract overrides transferFrom(), the call will resolve back to 
-			// your contract in some contexts depending on inheritance chain.
-			// This can cause recursion or unexpected allowance handling.
-			// That is why direct call to transferFrom (below) is avoided and instead _spendAllowance and 
-			// _transfer are called separately to ensure correct behavior.
-			
-			// ERC20.transferFrom(sender, recipient, amount);
-		}
 
 	}
 

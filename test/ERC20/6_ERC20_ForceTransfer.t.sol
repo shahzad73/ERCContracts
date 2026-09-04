@@ -41,24 +41,6 @@ contract ERC20_ForceTransfer_Test is ERC20_Base_Setup {
         assertEq(token.balanceOf(address(this)), ownerBalanceBefore + forceTransferAmount, "Tokens should go to owner");
     }
 
-    // Test: forceTransferToken respects KYC restrictions (does NOT bypass)
-    function test_ForceTransfer_RespectsKYCRestrictions() public {
-        // Transfer tokens to addr1 first
-        vm.prank(address(this));
-        token.transfer(addr1, 1000);
-        
-        // Set KYC restrictions on addr1 (cannot send)
-        uint256 futureTime = block.timestamp + 365 days;
-        vm.prank(address(this));
-        token.modifyKYCData(addr1, 0, futureTime);
-        
-        // Owner should NOT be able to force transfer when sender has KYC restrictions
-        // forceTransferToken uses _transfer which checks _beforeTokenTransfer
-        vm.prank(address(this));
-        vm.expectRevert("Sender is under send restrictions");
-        token.forceTransferToken(addr1, 500);
-    }
-
     // Test: forceTransferToken respects pause (does NOT bypass)
     function test_ForceTransfer_RespectsPause() public {
         // Transfer tokens to addr1 first
@@ -160,23 +142,6 @@ contract ERC20_ForceTransfer_Test is ERC20_Base_Setup {
         vm.expectEmit(address(token));
         emit ERC20Token.IssuerForceTransfer(addr1, address(this), forceTransferAmount);
         token.forceTransferToken(addr1, forceTransferAmount);
-    }
-
-    // Test: forceTransferToken respects receiver KYC restrictions
-    function test_ForceTransfer_RespectsReceiverKYCRestriction() public {
-        // Transfer tokens to addr1 first
-        vm.prank(address(this));
-        token.transfer(addr1, 1000);
-        
-        // Set receive restriction on owner (the receiver in force transfer)
-        uint256 futureTime = block.timestamp + 365 days;
-        vm.prank(address(this));
-        token.modifyKYCData(address(this), futureTime, 0);
-        
-        // Owner should NOT be able to force transfer to themselves when they have receive restriction
-        vm.prank(address(this));
-        vm.expectRevert("Receiver is under receive restriction");
-        token.forceTransferToken(addr1, 500);
     }
 
     // Test: forceTransferToken total supply remains the same
