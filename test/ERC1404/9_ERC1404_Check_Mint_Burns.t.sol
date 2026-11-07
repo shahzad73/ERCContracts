@@ -37,7 +37,13 @@ contract ERC1404_Check_Mint_Burns is ERC1404_Base_Setup {
     function testMintNewTokensAsInvestor(uint128 amount) public {
         vm.assume(amount > 0);
         vm.prank(addr1);
-        vm.expectRevert("Ownable: caller is not the owner");
+        
+        //vm.expectRevert("Ownable: caller is not the owner");
+        // Expect the OpenZeppelin v5 OwnableUnauthorizedAccount custom error
+        vm.expectRevert(
+            abi.encodeWithSignature("OwnableUnauthorizedAccount(address)", addr1)
+        );        
+        
         token.mint(addr1, amount);
     }
 
@@ -70,12 +76,32 @@ contract ERC1404_Check_Mint_Burns is ERC1404_Base_Setup {
 
     function testCheckAddressCannotBurnMoreThanBalanceIssuer() public {
         address owner = token.owner();
-        vm.expectRevert("ERC20: burn amount exceeds balance");
+        //vm.expectRevert("ERC20: burn amount exceeds balance");
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                IERC20Errors.ERC20InsufficientBalance.selector,
+                owner,             // The account address being burned from
+                initialSupply,     // Their actual balance (10000)
+                initialSupply + 1  // The amount they tried to burn (10001)
+            )
+        );
         token.burn(owner, initialSupply + 1);
     }
 
     function testCheckAddressCannotBurnMoreThanBalanceInvestor() public {
-        vm.expectRevert("ERC20: burn amount exceeds balance");
+        // vm.expectRevert("ERC20: burn amount exceeds balance");
+
+        address senderAddress = address(this); 
+        uint256 balance = token.balanceOf(addr1); // Their actual balance        
+
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                IERC20Errors.ERC20InsufficientBalance.selector,
+                addr1,         // The account address being burned from
+                balance,       // Their actual balance 
+                initialSupply  // The amount they tried to burn
+            )
+        );        
         token.burn(addr1, initialSupply);
     }  
 }

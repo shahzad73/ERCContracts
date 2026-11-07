@@ -86,12 +86,14 @@ contract ERC20_Pause_Unpause_Test is ERC20_Base_Setup {
         
         // Try to transfer from addr1
         vm.prank(addr1);
-        vm.expectRevert("ERC20Pausable: token transfer while paused");
+        //vm.expectRevert("ERC20Pausable: token transfer while paused");
+        vm.expectRevert(bytes4(keccak256("EnforcedPause()")));
         token.transfer(addr2, 100);
         
         // Try to transfer from owner
         vm.prank(address(this));
-        vm.expectRevert("ERC20Pausable: token transfer while paused");
+        //vm.expectRevert("ERC20Pausable: token transfer while paused");
+        vm.expectRevert(bytes4(keccak256("EnforcedPause()")));
         token.transfer(addr3, 100);
     }
 

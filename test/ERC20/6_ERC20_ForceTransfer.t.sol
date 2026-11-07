@@ -54,7 +54,8 @@ contract ERC20_ForceTransfer_Test is ERC20_Base_Setup {
         // Owner should NOT be able to force transfer when paused
         // forceTransferToken uses _transfer which is blocked by ERC20Pausable
         vm.prank(address(this));
-        vm.expectRevert("ERC20Pausable: token transfer while paused");
+        //vm.expectRevert("ERC20Pausable: token transfer while paused");
+        vm.expectRevert(bytes4(keccak256("EnforcedPause()")));
         token.forceTransferToken(addr1, 500);
     }
 

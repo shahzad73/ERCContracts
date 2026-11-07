@@ -34,7 +34,19 @@ contract ERC1404_Basic_Transfer_Test is ERC1404_Base_Setup {
     }
 
     function testIssuerTransferMoreThanAvailableAmount() public {
-        vm.expectRevert("ERC20: transfer amount exceeds balance");
+        // vm.expectRevert("ERC20: transfer amount exceeds balance");
+        
+        address senderAddress = address(this); 
+        uint256 balance = token.balanceOf(senderAddress); // Their actual balance        
+
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                IERC20Errors.ERC20InsufficientBalance.selector,
+                senderAddress, // The address attempting the transfer (e.g., 0x1a89...)
+                balance,       // The actual balance they have (e.g., 100)
+                _transferMoreThanAvailable         // The amount they tried to transfer (e.g., 101)
+            )
+        );        
         token.transfer(addr1, _transferMoreThanAvailable);
     }
 
@@ -42,7 +54,16 @@ contract ERC1404_Basic_Transfer_Test is ERC1404_Base_Setup {
         token.transfer(addr1, _transferAmount);
 
         vm.prank(addr1);
-        vm.expectRevert("ERC20: transfer amount exceeds balance");
+        //vm.expectRevert("ERC20: transfer amount exceeds balance");
+
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                IERC20Errors.ERC20InsufficientBalance.selector,
+                addr1,         // The address attempting the transfer (e.g., 0x1a89...)
+                _transferAmount,       // The actual balance they have (e.g., 100)
+                _transferAmount + 1         // The amount they tried to transfer (e.g., 101)
+            )
+        );        
         token.transfer(addr2, _transferAmount + 1);
     }
 
@@ -53,7 +74,19 @@ contract ERC1404_Basic_Transfer_Test is ERC1404_Base_Setup {
 
     function testTransferNegativeAmount() public {
         // Since the int type is not compatible with the uint type you cannot even try to test with negative values
-        vm.expectRevert("ERC20: transfer amount exceeds balance");
+        // vm.expectRevert("ERC20: transfer amount exceeds balance");
+        
+        address senderAddress = address(this); 
+        uint256 balance = token.balanceOf(senderAddress); // Their actual balance        
+
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                IERC20Errors.ERC20InsufficientBalance.selector,
+                senderAddress, // The address attempting the transfer (e.g., 0x1a89...)
+                balance,       // The actual balance they have (e.g., 100)
+                _transferNegativeAmount         // The amount they tried to transfer (e.g., 101)
+            )
+        );        
         token.transfer(addr1, uint(_transferNegativeAmount));
     }
 

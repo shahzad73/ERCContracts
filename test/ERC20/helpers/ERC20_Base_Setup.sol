@@ -16,6 +16,9 @@ contract ERC20_Base_Setup is Test {
     uint8 decimalsPlaces = 18;
 
     function setUp() public virtual {
-        token = new ERC20Token(initialSupply, name);
+        token = new ERC20Token(
+            initialSupply, 
+            name
+        );
     }
 }

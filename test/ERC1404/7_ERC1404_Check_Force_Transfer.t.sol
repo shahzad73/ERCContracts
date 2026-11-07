@@ -30,25 +30,63 @@ contract ERC1404_Check_Force_Transfer is ERC1404_Base_Setup {
     function testForceTransferMoreThanAvailableTokensFromInvestor(uint amount) public {
         amount = bound(amount, 1, initialSupply);
         token.transfer(addr1, amount);
-        vm.expectRevert("ERC20: transfer amount exceeds balance");
+        //vm.expectRevert("ERC20: transfer amount exceeds balance");
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                IERC20Errors.ERC20InsufficientBalance.selector,
+                addr1,          // The address attempting the transfer (e.g., 0x1a89...)
+                amount,                 // The actual balance they have (e.g., 100)
+                amount + 1              // The amount they tried to transfer (e.g., 101)
+            )
+        );
         token.forceTransferToken(addr1, amount + 1);
     }
 
      function testForceTransferMoreThanAvailableTokensFromInvestorZeroBalance(uint amount) public {
         amount = bound(amount, 1, initialSupply);
-        vm.expectRevert("ERC20: transfer amount exceeds balance");
+        // vm.expectRevert("ERC20: transfer amount exceeds balance");
+        uint256 balance = token.balanceOf(addr1); // Their actual balance  
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                IERC20Errors.ERC20InsufficientBalance.selector,
+                addr1, // The address attempting the transfer (e.g., 0x1a89...)
+                balance,       // The actual balance they have (e.g., 100)
+                amount         // The amount they tried to transfer (e.g., 101)
+            )
+        );
+
         token.forceTransferToken(addr1, amount);
     }
 
     function testForceTransferTokensFromInvestorNotWhitelisted(uint amount) public {
         amount = bound(amount, 1, initialSupply);
-        vm.expectRevert("ERC20: transfer amount exceeds balance");
+        // vm.expectRevert("ERC20: transfer amount exceeds balance");
+        uint256 balance = token.balanceOf(addr2); // Their actual balance          
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                IERC20Errors.ERC20InsufficientBalance.selector,
+                addr2,         // The address attempting the transfer (e.g., 0x1a89...)
+                balance,       // The actual balance they have (e.g., 100)
+                amount         // The amount they tried to transfer (e.g., 101)
+            )
+        );        
         token.forceTransferToken(addr2, amount);
     }
 
     function testForceTransferTokensFromInvestorRestricted(uint amount) public {
         amount = bound(amount, 1, initialSupply);
-        vm.expectRevert("ERC20: transfer amount exceeds balance");
+        // vm.expectRevert("ERC20: transfer amount exceeds balance");
+
+        uint256 balance = token.balanceOf(addr3); // Their actual balance          
+
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                IERC20Errors.ERC20InsufficientBalance.selector,
+                addr3, // The address attempting the transfer (e.g., 0x1a89...)
+                balance,       // The actual balance they have (e.g., 100)
+                amount         // The amount they tried to transfer (e.g., 101)
+            )
+        );        
         token.forceTransferToken(addr3, amount);
     }
 }

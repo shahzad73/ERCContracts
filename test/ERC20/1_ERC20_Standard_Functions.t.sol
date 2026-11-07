@@ -73,7 +73,13 @@ contract ERC20_Standard_Functions_Test is ERC20_Base_Setup {
     // Test approve() to zero spender should fail
     function test_Approve_ZeroSpender_Fails() public {
         vm.prank(address(this));
-        vm.expectRevert("ERC20: approve to the zero address");
+        
+        // vm.expectRevert("ERC20: approve to the zero address");        
+        // Expect the OpenZeppelin v5 ERC20InvalidSpender custom error
+        vm.expectRevert(
+            abi.encodeWithSignature("ERC20InvalidSpender(address)", address(0))
+        );        
+
         token.approve(address(0), 500);
     }
 

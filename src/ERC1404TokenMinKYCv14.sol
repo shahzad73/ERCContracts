@@ -2,8 +2,8 @@
 
 pragma solidity 0.8.24;
 
-import "../lib/openzeppelin-contracts/contracts/token/ERC20/ERC20.sol";
-import "../lib/openzeppelin-contracts/contracts/access/Ownable.sol";
+import "openzeppelin-contracts/contracts/token/ERC20/ERC20.sol";
+import "openzeppelin-contracts/contracts/access/Ownable.sol";
 import "./IERC1404.sol";
 
 
@@ -65,7 +65,10 @@ contract ERC1404TokenMinKYCv14 is ERC20, Ownable, IERC1404 {
 		uint8 _decimalsPlaces, 
 		address _atomicSwapContractAddress,
 		uint64  _tradingHoldingPeriod
-	) ERC20(_name, _symbol)  {
+	) 
+	ERC20(_name, _symbol)  
+	Ownable(msg.sender)
+	{
 
 			address tmpSenderAddress = msg.sender;
 
@@ -127,11 +130,46 @@ contract ERC1404TokenMinKYCv14 is ERC20, Ownable, IERC1404 {
 	
 
 
-    function mint (address account, uint256 amount)		
+    function whitelistandmint (
+		address account, 
+		uint256 amount,
+		uint256 receiveRestriction, 
+		uint256 sendRestriction 		
+	)		
     external        
 	Ownable.onlyOwner
     returns (bool)
     {
+		//first whitelist the address 
+		setupKYCDataForUser( account, receiveRestriction, sendRestriction );
+
+		//and now mint tokens in it 
+		_minttokens( account, amount );
+
+		return true;
+	}
+
+
+
+    function mint (
+		address account, 
+		uint256 amount
+	)		
+    external        
+	Ownable.onlyOwner
+    returns (bool)
+    {
+
+		_minttokens( account, amount );
+		return true;
+    }
+
+
+	function _minttokens (
+		address account, 
+		uint256 amount
+	) internal {		
+
 		require ( account != address(0), "Minting address cannot be zero");
 		require ( _receiveRestriction[account] != 0, "Address is not yet whitelisted by issuer" );
 		require ( amount > 0, "Zero amount cannot be minted" );
@@ -139,8 +177,10 @@ contract ERC1404TokenMinKYCv14 is ERC20, Ownable, IERC1404 {
 		ERC20._mint(account, amount);		 
 
 		emit MintTokens(account, amount);
-		return true;
-    }
+
+	}
+
+
 
 
     function burn (address account, uint256 amount)
